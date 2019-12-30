@@ -9,14 +9,14 @@ import (
 )
 
 type server struct {
-	router     *mux.Router
-	signingKey []byte
+	router          *mux.Router
+	tokenSigningKey []byte
 }
 
 func newServer() *server {
 	s := &server{
-		router:     mux.NewRouter(),
-		signingKey: []byte("blabla"),
+		router:          mux.NewRouter(),
+		tokenSigningKey: []byte("blabla"),
 	}
 	s.routes()
 	return s

@@ -22,8 +22,9 @@ func (s *server) respond(w http.ResponseWriter, data interface{}, status int) {
 	}
 }
 
-func (s *server) decode(r *http.Request, data interface{}) error {
-	return json.NewDecoder(r.Body).Decode(data)
+type Claims struct {
+	Username string `json:"username"`
+	jwt.StandardClaims
 }
 
 func (s *server) handleLogin() http.HandlerFunc {
@@ -37,19 +38,20 @@ func (s *server) handleLogin() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var requestData request
-		err := s.decode(r, &requestData)
+		err := json.NewDecoder(r.Body).Decode(&requestData)
 		if err != nil {
 			s.respond(w, nil, http.StatusBadRequest)
 			return
 		}
 
-		tokenFactory := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"username": requestData.Username,
-			"password": requestData.Password,
-			"exp":      time.Now().Add(time.Hour * 24).Unix(),
+		tokenFactory := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
+			Username: requestData.Username,
+			StandardClaims: jwt.StandardClaims{
+				ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+			},
 		})
 
-		tokenString, err := tokenFactory.SignedString(s.signingKey)
+		tokenString, err := tokenFactory.SignedString(s.tokenSigningKey)
 
 		if err != nil {
 			s.respond(w, nil, http.StatusInternalServerError)
@@ -57,6 +59,16 @@ func (s *server) handleLogin() http.HandlerFunc {
 		}
 
 		resp := response{Token: tokenString}
+		s.respond(w, resp, http.StatusOK)
+	}
+}
+
+func (s *server) hello() http.HandlerFunc {
+	type response struct {
+		Result string `json:"result"`
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		resp := response{Result: "Hi!"}
 		s.respond(w, resp, http.StatusOK)
 	}
 }
