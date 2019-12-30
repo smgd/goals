@@ -63,12 +63,13 @@ func (s *server) handleLogin() http.HandlerFunc {
 	}
 }
 
-func (s *server) handlerHello() http.HandlerFunc {
+func (s *server) handlerWhoAmI() http.HandlerFunc {
 	type response struct {
-		Result string `json:"result"`
+		Username string `json:"username"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		resp := response{Result: "Hi!"}
+		username := r.Context().Value("Username")
+		resp := response{Username: username.(string)}
 		s.respond(w, resp, http.StatusOK)
 	}
 }

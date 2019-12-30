@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
 )
@@ -30,7 +31,8 @@ func (s *server) privateRoute(h http.HandlerFunc) http.HandlerFunc {
 			s.respond(w, nil, http.StatusUnauthorized)
 			return
 		}
-
-		h(w, r)
+		ctx := context.WithValue(r.Context(), "Username", claims.Username)
+		r.WithContext(ctx)
+		h(w, r.WithContext(ctx))
 	}
 }
