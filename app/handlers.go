@@ -63,7 +63,7 @@ func (s *server) handleLogin() http.HandlerFunc {
 	}
 }
 
-func (s *server) hello() http.HandlerFunc {
+func (s *server) handlerHello() http.HandlerFunc {
 	type response struct {
 		Result string `json:"result"`
 	}
