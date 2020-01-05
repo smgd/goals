@@ -19,7 +19,7 @@ type server struct {
 func newServer(db gorm.DB) *server {
 	s := &server{
 		router:          mux.NewRouter(),
-		tokenSigningKey: []byte("blabla"),
+		tokenSigningKey: []byte(os.Getenv("TOKEN_SIGNING_KEY")),
 		db:              &db,
 	}
 	s.routes()
@@ -28,7 +28,15 @@ func newServer(db gorm.DB) *server {
 
 func Run() error {
 	fmt.Println("listening...")
-	db, err := gorm.Open("postgres", "postgres://goals:qwerty@localhost:5432/goals?sslmode=disable")
+	dbAddr := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_NAME"),
+	)
+	db, err := gorm.Open("postgres", dbAddr)
 	if err != nil {
 		panic(err)
 	}
