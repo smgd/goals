@@ -134,5 +134,11 @@ func (s *server) handleWhoAmI() http.HandlerFunc {
 }
 
 func (s *server) handlePing() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {}
+	type response struct {
+		Result string `json:"result"`
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		resp := response{Result: "pong"}
+		s.respond(w, resp, http.StatusOK)
+	}
 }
