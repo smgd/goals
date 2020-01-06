@@ -122,7 +122,7 @@ func (s *server) handleLogin() http.HandlerFunc {
 	}
 }
 
-func (s *server) handlerWhoAmI() http.HandlerFunc {
+func (s *server) handleWhoAmI() http.HandlerFunc {
 	type response struct {
 		Username string `json:"username"`
 	}
@@ -131,4 +131,8 @@ func (s *server) handlerWhoAmI() http.HandlerFunc {
 		resp := response{Username: username.(string)}
 		s.respond(w, resp, http.StatusOK)
 	}
+}
+
+func (s *server) handlePing() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {}
 }

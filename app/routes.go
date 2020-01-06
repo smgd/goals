@@ -19,5 +19,6 @@ func (s *server) addPrivateRoute(path string, handleFunc func(http.ResponseWrite
 func (s *server) routes() {
 	s.addRoute("login", s.handleLogin(), "POST")
 	s.addRoute("register", s.handleRegister(), "POST")
-	s.addPrivateRoute("whoami", s.handlerWhoAmI(), "GET")
+	s.addRoute("ping", s.handlePing(), "GET")
+	s.addPrivateRoute("whoami", s.handleWhoAmI(), "GET")
 }
