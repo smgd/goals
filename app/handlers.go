@@ -138,7 +138,7 @@ func (s *server) handlePing() http.HandlerFunc {
 		Result string `json:"result"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		resp := response{Result: "pong"}
+		resp := response{Result: "kong"}
 		s.respond(w, resp, http.StatusOK)
 	}
 }
