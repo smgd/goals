@@ -30,9 +30,11 @@ type Claims struct {
 
 func (s *server) handleRegister() http.HandlerFunc {
 	type request struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-		Email    string `json:"email"`
+		Username  string `json:"username"`
+		Password  string `json:"password"`
+		Email     string `json:"email"`
+		FirstName string `json:"first_name"`
+		LastName  string `json:"last_name"`
 	}
 	type response struct {
 		Token string `json:"token"`
@@ -54,10 +56,10 @@ func (s *server) handleRegister() http.HandlerFunc {
 			return
 		}
 
-		newUser = User{
-			Username: requestData.Username,
-			Password: requestData.Password,
-			Email:    requestData.Email,
+		err = copier.Copy(&newUser, &requestData)
+		if err != nil {
+			s.respond(w, nil, http.StatusInternalServerError)
+			return
 		}
 
 		s.db.Create(&newUser)
