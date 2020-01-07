@@ -20,3 +20,19 @@ type Area struct {
 	User        User `gorm:"foreignkey:UserID"`
 	UserID      uint
 }
+
+type Goal struct {
+	gorm.Model
+	Name        string
+	Description string
+	Area        Area `gorm:"foreignkey:UserID"`
+	AreaID      uint
+}
+
+type Task struct {
+	gorm.Model
+	Name        string
+	Description string
+	Goal        Goal `gorm:"foreignkey:UserID"`
+	GoalID      uint
+}
