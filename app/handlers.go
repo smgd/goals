@@ -127,8 +127,8 @@ func (s *server) handleWhoAmI() http.HandlerFunc {
 		Username string `json:"username"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		username := r.Context().Value("Username")
-		resp := response{Username: username.(string)}
+		user := r.Context().Value("User").(*User)
+		resp := response{Username: user.Username}
 		s.respond(w, resp, http.StatusOK)
 	}
 }
@@ -139,6 +139,30 @@ func (s *server) handlePing() http.HandlerFunc {
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		resp := response{Result: "pong"}
+		s.respond(w, resp, http.StatusOK)
+	}
+}
+
+func (s *server) handleGetAreas() http.HandlerFunc {
+	type areasResponse struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+	}
+	type response struct {
+		Areas []areasResponse `json:"areas"`
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := r.Context().Value("User").(*User)
+
+		var areas []Area
+		s.db.Find(&areas, "user_id = ?", user.ID)
+
+		var areasResp []areasResponse
+		for _, area := range areas {
+			areasResp = append(areasResp, areasResponse{Name: area.Name, Description: area.Description})
+		}
+
+		resp := response{Areas: areasResp}
 		s.respond(w, resp, http.StatusOK)
 	}
 }

@@ -47,7 +47,10 @@ func (s *server) privateRoute(h http.HandlerFunc) http.HandlerFunc {
 			s.respond(w, nil, http.StatusUnauthorized)
 			return
 		}
-		ctx := context.WithValue(r.Context(), "Username", claims.Username)
+
+		var user User
+		s.db.First(&user, "username = ?", claims.Username)
+		ctx := context.WithValue(r.Context(), "User", user)
 		r.WithContext(ctx)
 		h(w, r.WithContext(ctx))
 	}
