@@ -43,6 +43,7 @@ func Run() error {
 	defer db.Close()
 
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Area{})
 
 	s := newServer(*db)
 	return http.ListenAndServe(":8000", handlers.LoggingHandler(os.Stdout, s.router))
