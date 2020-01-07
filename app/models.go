@@ -25,7 +25,7 @@ type Goal struct {
 	gorm.Model
 	Name        string
 	Description string
-	Area        Area `gorm:"foreignkey:UserID"`
+	Area        Area `gorm:"foreignkey:AreaID"`
 	AreaID      uint
 }
 
@@ -33,6 +33,6 @@ type Task struct {
 	gorm.Model
 	Name        string
 	Description string
-	Goal        Goal `gorm:"foreignkey:UserID"`
+	Goal        Goal `gorm:"foreignkey:GoalID"`
 	GoalID      uint
 }
