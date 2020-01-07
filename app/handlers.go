@@ -3,6 +3,7 @@ package app
 import (
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/jinzhu/copier"
 	"net/http"
 	"time"
 )
@@ -124,11 +125,20 @@ func (s *server) handleLogin() http.HandlerFunc {
 
 func (s *server) handleWhoAmI() http.HandlerFunc {
 	type response struct {
-		Username string `json:"username"`
+		Username  string `json:"username"`
+		ID        uint   `json:"id"`
+		Email     string `json:"email"`
+		FirstName string `json:"first_name"`
+		LastName  string `json:"last_name"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		user := r.Context().Value("User").(*User)
-		resp := response{Username: user.Username}
+		user := r.Context().Value("User").(User)
+		resp := response{}
+		err := copier.Copy(&resp, &user)
+		if err != nil {
+			s.respond(w, nil, http.StatusInternalServerError)
+			return
+		}
 		s.respond(w, resp, http.StatusOK)
 	}
 }
@@ -152,17 +162,9 @@ func (s *server) handleGetAreas() http.HandlerFunc {
 		Areas []areasResponse `json:"areas"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		user := r.Context().Value("User").(*User)
-
-		var areas []Area
-		s.db.Find(&areas, "user_id = ?", user.ID)
-
-		var areasResp []areasResponse
-		for _, area := range areas {
-			areasResp = append(areasResp, areasResponse{Name: area.Name, Description: area.Description})
-		}
-
-		resp := response{Areas: areasResp}
+		user := r.Context().Value("User").(User)
+		resp := response{Areas: []areasResponse{}}
+		s.db.Table("areas").Where("user_id = ?", user.ID).Scan(&resp.Areas)
 		s.respond(w, resp, http.StatusOK)
 	}
 }
