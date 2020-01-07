@@ -10,7 +10,7 @@ type User struct {
 	LastName  string
 	Username  string `gorm:"type:varchar(100);unique_index"`
 	Email     string `gorm:"type:varchar(100);unique_index"`
-	Password  string `gorm:"type:varchar(100)"`
+	Password  string
 }
 
 type Area struct {

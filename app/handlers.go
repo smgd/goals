@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/copier"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"time"
 )
@@ -55,11 +56,17 @@ func (s *server) handleRegister() http.HandlerFunc {
 			s.respond(w, nil, http.StatusBadRequest)
 			return
 		}
-
-		err = copier.Copy(&newUser, &requestData)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(requestData.Password), 8)
 		if err != nil {
 			s.respond(w, nil, http.StatusInternalServerError)
 			return
+		}
+		newUser = User{
+			Username:  requestData.Username,
+			Password:  string(hashedPassword),
+			Email:     requestData.Email,
+			FirstName: requestData.FirstName,
+			LastName:  requestData.LastName,
 		}
 
 		s.db.Create(&newUser)
@@ -102,10 +109,13 @@ func (s *server) handleLogin() http.HandlerFunc {
 		var user User
 		s.db.First(&user, "username = ?", requestData.Username)
 
-		if user.Username == "" || user.Password != requestData.Password {
+		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(requestData.Password))
+
+		if user.Username == "" || err != nil {
 			s.respond(w, nil, http.StatusUnauthorized)
 			return
 		}
+
 		tokenFactory := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 			Username: requestData.Username,
 			StandardClaims: jwt.StandardClaims{
