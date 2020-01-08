@@ -29,6 +29,17 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+func (s *server) createToken(username string) (string, error) {
+	tokenFactory := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+		},
+	})
+
+	return tokenFactory.SignedString(s.tokenSigningKey)
+}
+
 func (s *server) handleRegister() http.HandlerFunc {
 	type request struct {
 		Username  string `json:"username"`
@@ -71,15 +82,7 @@ func (s *server) handleRegister() http.HandlerFunc {
 
 		s.db.Create(&newUser)
 
-		tokenFactory := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
-			Username: requestData.Username,
-			StandardClaims: jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-			},
-		})
-
-		tokenString, err := tokenFactory.SignedString(s.tokenSigningKey)
-
+		tokenString, err := s.createToken(requestData.Username)
 		if err != nil {
 			s.respond(w, nil, http.StatusInternalServerError)
 			return
@@ -116,15 +119,7 @@ func (s *server) handleLogin() http.HandlerFunc {
 			return
 		}
 
-		tokenFactory := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
-			Username: requestData.Username,
-			StandardClaims: jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-			},
-		})
-
-		tokenString, err := tokenFactory.SignedString(s.tokenSigningKey)
-
+		tokenString, err := s.createToken(requestData.Username)
 		if err != nil {
 			s.respond(w, nil, http.StatusInternalServerError)
 			return
