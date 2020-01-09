@@ -67,6 +67,14 @@ func (s *server) handleRegister() http.HandlerFunc {
 			s.respond(w, nil, http.StatusBadRequest)
 			return
 		}
+
+		s.db.First(&newUser, "email = ?", requestData.Email)
+
+		if newUser.Email != "" {
+			s.respond(w, nil, http.StatusBadRequest)
+			return
+		}
+
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(requestData.Password), 8)
 		if err != nil {
 			s.respond(w, nil, http.StatusInternalServerError)
