@@ -2,12 +2,14 @@ package app
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"net/http"
-	"os"
+	"github.com/sirupsen/logrus"
 )
 
 type server struct {
@@ -38,6 +40,12 @@ func Run() error {
 	)
 	db, err := gorm.Open("postgres", dbAddr)
 	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"package":  "app",
+			"function": "gorm.Open",
+			"error":    err,
+			"dbAddr":   dbAddr,
+		}).Error("Can't open database connection")
 		panic(err)
 	}
 	defer db.Close()
