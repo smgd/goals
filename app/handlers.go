@@ -2,13 +2,12 @@ package app
 
 import (
 	"encoding/json"
-	"net/http"
-	"time"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/copier"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
+	"time"
 )
 
 func (s *server) respond(w http.ResponseWriter, data interface{}, status int) {

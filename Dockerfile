@@ -10,6 +10,7 @@ RUN set -ex && \
   go get -u github.com/gorilla/handlers && \
   go get -u github.com/dgrijalva/jwt-go && \
   go get -u github.com/lib/pq && \
+  go get -u github.com/sirupsen/logrus && \
   go build && \
   mv ./goals /usr/bin/goals
 

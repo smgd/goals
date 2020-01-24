@@ -1,9 +1,8 @@
 package main
 
 import (
-	"goals/app"
-
 	log "github.com/sirupsen/logrus"
+	"goals/app"
 )
 
 func main() {

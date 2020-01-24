@@ -2,10 +2,9 @@ package app
 
 import (
 	"context"
-	"net/http"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
+	"net/http"
 )
 
 func (s *server) withCORS(h http.HandlerFunc) http.HandlerFunc {

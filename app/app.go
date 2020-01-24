@@ -2,14 +2,13 @@ package app
 
 import (
 	"fmt"
-	"net/http"
-	"os"
-
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/sirupsen/logrus"
+	"net/http"
+	"os"
 )
 
 type server struct {
