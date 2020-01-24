@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/copier"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"time"
@@ -15,6 +16,13 @@ func (s *server) respond(w http.ResponseWriter, data interface{}, status int) {
 		payload, _ := json.Marshal(data)
 		_, err := w.Write(payload)
 		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"package":  "app",
+				"function": "ResponseWriter.Write",
+				"error":    err,
+				"payload":  payload,
+			}).Warning("Internal server error")
+
 			status = http.StatusInternalServerError
 		}
 	}
@@ -56,6 +64,14 @@ func (s *server) handleRegister() http.HandlerFunc {
 		var requestData request
 		err := json.NewDecoder(r.Body).Decode(&requestData)
 		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"package":  "app",
+				"handler":  "handleRegister",
+				"function": "json.NewDecoder",
+				"error":    err,
+				"data":     r.Body,
+			}).Warning("Failed to decode request body")
+
 			s.respond(w, nil, http.StatusBadRequest)
 			return
 		}
@@ -77,6 +93,13 @@ func (s *server) handleRegister() http.HandlerFunc {
 
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(requestData.Password), 8)
 		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"package":  "app",
+				"handler":  "handleRegister",
+				"function": "bcrypt.GenerateFromPassword",
+				"error":    err,
+			}).Warning("Failed to generate password hash")
+
 			s.respond(w, nil, http.StatusInternalServerError)
 			return
 		}
@@ -92,6 +115,14 @@ func (s *server) handleRegister() http.HandlerFunc {
 
 		tokenString, err := s.createToken(requestData.Username)
 		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"package":  "app",
+				"handler":  "handleRegister",
+				"function": "server.createToken",
+				"error":    err,
+				"data":     requestData.Username,
+			}).Warning("Failed to create token")
+
 			s.respond(w, nil, http.StatusInternalServerError)
 			return
 		}
@@ -114,6 +145,14 @@ func (s *server) handleLogin() http.HandlerFunc {
 		var requestData request
 		err := json.NewDecoder(r.Body).Decode(&requestData)
 		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"package":  "app",
+				"handler":  "handleLogin",
+				"function": "json.NewDecoder",
+				"error":    err,
+				"data":     r.Body,
+			}).Warning("Failed to decode request body")
+
 			s.respond(w, nil, http.StatusBadRequest)
 			return
 		}
@@ -123,12 +162,27 @@ func (s *server) handleLogin() http.HandlerFunc {
 		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(requestData.Password))
 
 		if user.Username == "" || err != nil {
+			logrus.WithFields(logrus.Fields{
+				"package":  "app",
+				"handler":  "handleLogin",
+				"function": "bcrypt.CompareHashAndPassword",
+				"error":    err,
+			}).Warning("Failed to login")
+
 			s.respond(w, nil, http.StatusUnauthorized)
 			return
 		}
 
 		tokenString, err := s.createToken(requestData.Username)
 		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"package":  "app",
+				"handler":  "handleLogin",
+				"function": "server.createToken",
+				"error":    err,
+				"data":     requestData.Username,
+			}).Warning("Failed to create token")
+
 			s.respond(w, nil, http.StatusInternalServerError)
 			return
 		}
@@ -151,6 +205,13 @@ func (s *server) handleWhoAmI() http.HandlerFunc {
 		resp := response{}
 		err := copier.Copy(&resp, &user)
 		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"package":  "app",
+				"handler":  "handleWhoAmI",
+				"function": "copier.Copy",
+				"error":    err,
+			}).Warning("Failed to write response")
+
 			s.respond(w, nil, http.StatusInternalServerError)
 			return
 		}

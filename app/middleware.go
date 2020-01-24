@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -37,6 +38,13 @@ func (s *server) privateRoute(h http.HandlerFunc) http.HandlerFunc {
 		})
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
+				logrus.WithFields(logrus.Fields{
+					"package":     "app",
+					"function":    "jwt.ParseWithClaims",
+					"error":       err,
+					"tokenString": tokenString,
+				}).Warning("Token invalid signature")
+
 				s.respond(w, nil, http.StatusUnauthorized)
 				return
 			}

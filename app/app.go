@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 )
@@ -38,6 +39,12 @@ func Run() error {
 	)
 	db, err := gorm.Open("postgres", dbAddr)
 	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"package":  "app",
+			"function": "gorm.Open",
+			"error":    err,
+			"dbAddr":   dbAddr,
+		}).Error("Can't open database connection")
 		panic(err)
 	}
 	defer db.Close()
