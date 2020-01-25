@@ -4,7 +4,7 @@ ADD ./main.go /go/src/goals/main.go
 ADD ./app /go/src/goals/app
 RUN set -ex && \
   cd /go/src/goals && \
-  go get -u && \
+  go get -d ./... && \
   go build && \
   mv ./goals /usr/bin/goals
 
