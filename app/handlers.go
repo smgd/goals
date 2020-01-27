@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	. "goals/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/copier"
 	"github.com/sirupsen/logrus"
