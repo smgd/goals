@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	. "goals/models"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
