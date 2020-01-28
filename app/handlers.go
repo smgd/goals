@@ -235,7 +235,7 @@ func (s *server) handleGetAreas() http.HandlerFunc {
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		Icon        string `json:"icon"`
-		IsFavourite string `json:"is_favourite"`
+		IsFavourite bool   `json:"is_favourite"`
 	}
 	type response struct {
 		Areas []areasResponse `json:"areas"`
@@ -245,5 +245,42 @@ func (s *server) handleGetAreas() http.HandlerFunc {
 		resp := response{Areas: []areasResponse{}}
 		s.db.Table("areas").Where("user_id = ?", user.ID).Scan(&resp.Areas)
 		s.respond(w, resp, http.StatusOK)
+	}
+}
+
+func (s *server) handleCreateAreas() http.HandlerFunc {
+	type request struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		Icon        string `json:"icon"`
+		IsFavourite bool   `json:"is_favourite"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		var requestData request
+		err := json.NewDecoder(r.Body).Decode(&requestData)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"package":  "app",
+				"handler":  "handleCreateAreas",
+				"function": "json.NewDecoder",
+				"error":    err,
+				"data":     r.Body,
+			}).Warning("Failed to decode request body")
+		}
+
+		user := r.Context().Value("User").(User)
+
+		newArea := Area{
+			Name:        requestData.Name,
+			Description: requestData.Description,
+			Icon:        requestData.Icon,
+			IsFavourite: requestData.IsFavourite,
+			UserID:      user.ID,
+		}
+
+		s.db.Create(&newArea)
+
+		s.respond(w, nil, http.StatusCreated)
 	}
 }

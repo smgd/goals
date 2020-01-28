@@ -22,4 +22,5 @@ func (s *server) routes() {
 	s.addRoute("ping", s.handlePing(), "GET")
 	s.addPrivateRoute("whoami", s.handleWhoAmI(), "GET")
 	s.addPrivateRoute("areas", s.handleGetAreas(), "GET")
+	s.addPrivateRoute("areas", s.handleCreateAreas(), "POST")
 }
