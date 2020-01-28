@@ -234,6 +234,8 @@ func (s *server) handleGetAreas() http.HandlerFunc {
 	type areasResponse struct {
 		Name        string `json:"name"`
 		Description string `json:"description"`
+		Icon        string `json:"icon"`
+		IsFavourite string `json:"is_favourite"`
 	}
 	type response struct {
 		Areas []areasResponse `json:"areas"`
