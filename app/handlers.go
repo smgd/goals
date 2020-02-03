@@ -233,6 +233,7 @@ func (s *server) handlePing() http.HandlerFunc {
 func (s *server) handleGetAreas() http.HandlerFunc {
 	type areasResponse struct {
 		Id          string `json:"id"`
+		Weight      string `json:"weight"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		Icon        string `json:"icon"`
@@ -255,6 +256,7 @@ func (s *server) handleCreateAreas() http.HandlerFunc {
 		Description string `json:"description"`
 		Icon        string `json:"icon"`
 		IsFavourite bool   `json:"is_favourite"`
+		Weight      int    `json:"weight"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -277,6 +279,7 @@ func (s *server) handleCreateAreas() http.HandlerFunc {
 			Description: requestData.Description,
 			Icon:        requestData.Icon,
 			IsFavourite: requestData.IsFavourite,
+			Weight:      requestData.Weight,
 			UserID:      user.ID,
 		}
 
