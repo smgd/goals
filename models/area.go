@@ -7,7 +7,7 @@ import (
 type Area struct {
 	gorm.Model
 	Name        string
-	Weight      int
+	Weight      int `gorm:"default:5"`
 	Description string
 	Icon        string
 	IsFavourite bool `gorm:"default:false"`
