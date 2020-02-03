@@ -232,6 +232,7 @@ func (s *server) handlePing() http.HandlerFunc {
 
 func (s *server) handleGetAreas() http.HandlerFunc {
 	type areasResponse struct {
+		Id          string `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		Icon        string `json:"icon"`
