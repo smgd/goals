@@ -5,6 +5,7 @@ import (
 	. "goals/models"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
+	. "goals/models"
 	"net/http"
 )
 

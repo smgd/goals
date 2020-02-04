@@ -6,6 +6,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/copier"
 	"github.com/sirupsen/logrus"
+	. "goals/models"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"time"
@@ -232,8 +233,12 @@ func (s *server) handlePing() http.HandlerFunc {
 
 func (s *server) handleGetAreas() http.HandlerFunc {
 	type areasResponse struct {
+		Id          int    `json:"id"`
+		Weight      int    `json:"weight"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
+		Icon        string `json:"icon"`
+		IsFavourite bool   `json:"is_favourite"`
 	}
 	type response struct {
 		Areas []areasResponse `json:"areas"`
@@ -243,5 +248,44 @@ func (s *server) handleGetAreas() http.HandlerFunc {
 		resp := response{Areas: []areasResponse{}}
 		s.db.Table("areas").Where("user_id = ?", user.ID).Scan(&resp.Areas)
 		s.respond(w, resp, http.StatusOK)
+	}
+}
+
+func (s *server) handleCreateAreas() http.HandlerFunc {
+	type request struct {
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		Icon        string `json:"icon"`
+		IsFavourite bool   `json:"is_favourite"`
+		Weight      int    `json:"weight"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		var requestData request
+		err := json.NewDecoder(r.Body).Decode(&requestData)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"package":  "app",
+				"handler":  "handleCreateAreas",
+				"function": "json.NewDecoder",
+				"error":    err,
+				"data":     r.Body,
+			}).Warning("Failed to decode request body")
+		}
+
+		user := r.Context().Value("User").(User)
+
+		newArea := Area{
+			Name:        requestData.Name,
+			Description: requestData.Description,
+			Icon:        requestData.Icon,
+			IsFavourite: requestData.IsFavourite,
+			Weight:      requestData.Weight,
+			UserID:      user.ID,
+		}
+
+		s.db.Create(&newArea)
+
+		s.respond(w, nil, http.StatusCreated)
 	}
 }
