@@ -4,6 +4,7 @@ import (
 	"context"
 	. "goals/models"
 	"net/http"
+	"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
@@ -27,11 +28,14 @@ func (s *server) withCORS(h http.HandlerFunc) http.HandlerFunc {
 
 func (s *server) privateRoute(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tokenString := r.Header.Get("Authorization")
-		if tokenString == "" {
+		splitTokenHeader := strings.Split(r.Header.Get("Authorization"), " ")
+
+		if len(splitTokenHeader) != 2 || splitTokenHeader[0] != "Bearer" || splitTokenHeader[1] == "" {
 			s.respond(w, nil, http.StatusUnauthorized)
 			return
 		}
+
+		tokenString := splitTokenHeader[1]
 
 		claims := &Claims{}
 
