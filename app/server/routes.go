@@ -87,12 +87,3 @@ func (s *Server) addPrivateRoute(path string, handleFunc func(http.ResponseWrite
 	*http.Request), methods ...string) {
 	s.addRoute(path, s.privateRoute(handleFunc), methods...)
 }
-
-func (s *Server) routes() {
-	s.addRoute("login", s.handleLogin(), "POST")
-	s.addRoute("register", s.handleRegister(), "POST")
-	s.addRoute("ping", s.handlePing(), "GET")
-	s.addPrivateRoute("whoami", s.handleWhoAmI(), "GET")
-	s.addPrivateRoute("areas", s.handleGetAreas(), "GET")
-	s.addPrivateRoute("areas", s.handleCreateAreas(), "POST")
-}
