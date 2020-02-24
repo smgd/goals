@@ -14,3 +14,8 @@ type Area struct {
 	User        User `gorm:"foreignkey:UserID"`
 	UserID      uint
 }
+
+func (a *Area) Validate() error {
+	return nil
+}
+

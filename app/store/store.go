@@ -13,6 +13,7 @@ type Store struct {
 	config *Config
 	db     *gorm.DB
 	userRepo *UserRepo 
+	areaRepo *AreaRepo
 }
 
 // Store constructor
@@ -37,7 +38,7 @@ func (s *Store) Open() error {
 		&models.Task{},
 	)
 
-	s.db := db
+	s.db = db
 
 	return nil
 }
@@ -59,4 +60,16 @@ func (s *Store) User() *UserRepo {
 	}
 
 	return s.userRepo
+}
+
+func (s *Store) Area() *AreaRepo {
+	if s.areaRepo != nil {
+		return s.areaRepo
+	}
+
+	s.areaRepo = &AreaRepo{
+		store: s,
+	}
+
+	return s.areaRepo
 }

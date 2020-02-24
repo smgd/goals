@@ -8,8 +8,6 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
-
-	. "goals/app/models"
 )
 
 type Claims struct {
@@ -69,8 +67,11 @@ func (s *Server) privateRoute(h http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		var user User
-		s.db.First(&user, "username = ?", claims.Username)
+		user, err := s.store.User().FindByUsername(claims.Username)
+		if err != nil {
+			s.respond(w, nil, http.StatusBadRequest)
+			return
+		}
 		ctx := context.WithValue(r.Context(), "User", user)
 		r.WithContext(ctx)
 		h(w, r.WithContext(ctx))

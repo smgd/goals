@@ -4,8 +4,6 @@ import (
 	"flag"
 	"github.com/BurntSushi/toml"
 	"goals/app/server"
-
-	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -20,14 +18,14 @@ func init() {
 func main() {
 	flag.Parse()
 
-	config = server.NewConfig()
+	config := server.NewConfig()
 	_, err := toml.DecodeFile(configPath, config)
 
 	if err != nil {
 		panic(err)
 	}
 
-	if err := server.Start(); err != nil {
+	if err := server.Start(config); err != nil {
 		panic(err)
 	}
 }
