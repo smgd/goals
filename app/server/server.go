@@ -63,20 +63,27 @@ func (s *Server) configureStore() error {
 func Start(config *Config) error {
 	s := New(config)
 
+	// configure logger
 	if err := s.configureLogger(); err != nil {
 		return err
 	}
-
+	s.logger.Info("Logger configured")
+	
+	// configure router
 	s.configureRouter()
+	s.logger.Info("Router configured")
 
-
+	// configure store
 	if err := s.configureStore(); err != nil {
 		return err
 	}
+	s.logger.Info("Store configured")
 
+	// create connection with database
 	if err := s.store.Open(); err != nil {
 		return err
 	}
+	s.logger.Info("Store connected")
 	defer s.store.Close()
 
 	s.logger.Info("starting server...")
