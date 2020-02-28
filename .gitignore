@@ -2,3 +2,4 @@
 .env
 app/app
 update.sh
+configs/server.toml

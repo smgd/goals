@@ -45,7 +45,7 @@ func (s *Server) privateRoute(h http.HandlerFunc) http.HandlerFunc {
 		claims := &Claims{}
 
 		tkn, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return s.tokenSigningKey, nil
+			return []byte(s.config.TokenSigningKey), nil
 		})
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {

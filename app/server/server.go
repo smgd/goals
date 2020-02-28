@@ -12,20 +12,18 @@ import (
 
 // API server
 type Server struct {
-	config          *Config
-	logger          *logrus.Logger
-	router          *mux.Router
-	store           *store.Store
-	tokenSigningKey []byte
+	config *Config
+	logger *logrus.Logger
+	router *mux.Router
+	store  *store.Store
 }
 
 // Server constructor
 func New(config *Config) *Server {
 	s := &Server{
-		config:          config,
-		logger:          logrus.New(),
-		router:          mux.NewRouter(),
-		tokenSigningKey: []byte(os.Getenv("TOKEN_SIGNING_KEY")),
+		config: config,
+		logger: logrus.New(),
+		router: mux.NewRouter(),
 	}
 	return s
 }

@@ -41,7 +41,7 @@ func (s *Server) createToken(username string) (string, error) {
 		},
 	})
 
-	return tokenFactory.SignedString(s.tokenSigningKey)
+	return tokenFactory.SignedString([]byte(s.config.TokenSigningKey))
 }
 
 func (s *Server) handleRegister() http.HandlerFunc {
