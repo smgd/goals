@@ -132,7 +132,7 @@ func (s *Server) handleWhoAmI() http.HandlerFunc {
 		LastName  string `json:"last_name"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		user := r.Context().Value("User").(models.User)
+		user := r.Context().Value("User").(*models.User)
 		resp := response{}
 		if err := copier.Copy(&resp, &user); err != nil {
 			s.respond(w, nil, http.StatusInternalServerError)
@@ -166,9 +166,9 @@ func (s *Server) handleGetAreas() http.HandlerFunc {
 		Areas []areasResponse `json:"areas"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		user := r.Context().Value("User").(models.User)
+		user := r.Context().Value("User").(*models.User)
 
-		err, userAreas := s.store.Area().FindAreasByUserID(user.ID)
+		userAreas, err := s.store.Area().FindAreasByUserID(user.ID)
 		if err != nil {
 			s.respond(w, nil, http.StatusBadRequest)
 		}
@@ -201,7 +201,7 @@ func (s *Server) handleCreateAreas() http.HandlerFunc {
 			return
 		}
 
-		user := r.Context().Value("User").(models.User)
+		user := r.Context().Value("User").(*models.User)
 
 		area := models.Area{
 			Name:        requestData.Name,
