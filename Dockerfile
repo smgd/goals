@@ -1,9 +1,9 @@
 FROM golang:alpine
 RUN apk add --no-cache git
+RUN apk add --no-cache make
 ADD . /go/src/goals
 RUN set -ex && \
   cd /go/src/goals && \
-  go get -d ./... && \
-  go build -o caribou cmd/caribou/main.go
+  /usr/bin/make -f Makefile build
 ENTRYPOINT ["/go/src/goals/caribou"]
 CMD ["-config-path", "/go/src/goals/configs/server.toml"]
