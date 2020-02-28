@@ -2,24 +2,10 @@ package server
 
 import (
 	"encoding/json"
+	"github.com/jinzhu/copier"
 	"goals/app/models"
 	"net/http"
-	"time"
-
-	"github.com/dgrijalva/jwt-go"
-	"github.com/jinzhu/copier"
 )
-
-func (s *Server) createToken(username string) (string, error) {
-	tokenFactory := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
-		Username: username,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-		},
-	})
-
-	return tokenFactory.SignedString([]byte(s.config.TokenSigningKey))
-}
 
 func (s *Server) handleRegister() http.HandlerFunc {
 	type request struct {

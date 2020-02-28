@@ -29,7 +29,7 @@ func (r *UserRepo) FindByUsername(username string) (*models.User, error) {
 	r.store.db.First(&user, "username = ?", username)
 
 	if user.Username == "" {
-		return &user, fmt.Errorf("User with username %s doesn't exists", username)
+		return &user, fmt.Errorf("user with username %s doesn't exists", username)
 	}
 
 	return &user, nil
@@ -41,20 +41,20 @@ func (r *UserRepo) preCreate(u *models.User) error {
 	r.store.db.Model(&models.User{}).Where("username = ?", u.Username).Or("email = ?", u.Email).Count(&count)
 
 	if count > 0 {
-		return errors.New("User already exists")
+		return errors.New("user already exists")
 	}
 
-	encryptPassword, err := getEncryptPassword(u.Password)
+	encryptedPassword, err := encryptPassword(u.Password)
 	if err != nil {
 		return err
 	}
 
-	u.Password = encryptPassword
+	u.Password = encryptedPassword
 
 	return nil
 }
 
-func getEncryptPassword(s string) (string, error) {
+func encryptPassword(s string) (string, error) {
 	b, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.MinCost)
 	if err != nil {
 		return "", err
