@@ -15,16 +15,15 @@ type Server struct {
 	config          *Config
 	logger          *logrus.Logger
 	router          *mux.Router
-	store			*store.Store
+	store           *store.Store
 	tokenSigningKey []byte
 }
-
 
 // Server constructor
 func New(config *Config) *Server {
 	s := &Server{
 		config:          config,
-		logger:			 logrus.New(),
+		logger:          logrus.New(),
 		router:          mux.NewRouter(),
 		tokenSigningKey: []byte(os.Getenv("TOKEN_SIGNING_KEY")),
 	}
@@ -68,7 +67,7 @@ func Start(config *Config) error {
 		return err
 	}
 	s.logger.Info("Logger configured")
-	
+
 	// configure router
 	s.configureRouter()
 	s.logger.Info("Router configured")

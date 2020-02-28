@@ -7,12 +7,11 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-
 // Database wrapper
 type Store struct {
-	config *Config
-	db     *gorm.DB
-	userRepo *UserRepo 
+	config   *Config
+	db       *gorm.DB
+	userRepo *UserRepo
 	areaRepo *AreaRepo
 }
 
@@ -42,7 +41,6 @@ func (s *Store) Open() error {
 
 	return nil
 }
-
 
 // Database connection closer wrapper
 func (s *Store) Close() {

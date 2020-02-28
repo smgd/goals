@@ -4,7 +4,6 @@ import (
 	"goals/app/store"
 )
 
-
 // Server's config
 type Config struct {
 	BindAddr string `toml:"bind_addr"`
@@ -12,12 +11,11 @@ type Config struct {
 	Store    *store.Config
 }
 
-
 // Server's Config constructor
 func NewConfig() *Config {
 	return &Config{
 		BindAddr: ":8080",
 		LogLevel: "debug",
-		Store:	  store.NewConfig(),
+		Store:    store.NewConfig(),
 	}
 }

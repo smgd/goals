@@ -1,9 +1,9 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net/http"
-	"context"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"

@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
-	"github.com/BurntSushi/toml"
 	"goals/app/server"
+
+	"github.com/BurntSushi/toml"
 )
 
 var (
@@ -13,7 +14,6 @@ var (
 func init() {
 	flag.StringVar(&configPath, "config-path", "configs/server.toml", "path to server's config file")
 }
-
 
 func main() {
 	flag.Parse()

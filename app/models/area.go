@@ -18,4 +18,3 @@ type Area struct {
 func (a *Area) Validate() error {
 	return nil
 }
-

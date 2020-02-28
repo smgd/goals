@@ -102,10 +102,10 @@ func (s *Server) handleLogin() http.HandlerFunc {
 
 		if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
 			s.respond(w, nil, http.StatusBadRequest)
-			return		
+			return
 		}
 
-		user, err := s.store.User().FindByUsername(requestData.Username); 
+		user, err := s.store.User().FindByUsername(requestData.Username)
 
 		if err != nil || user.ComparePassword(requestData.Password) {
 			s.respond(w, nil, http.StatusBadRequest)
@@ -198,7 +198,7 @@ func (s *Server) handleCreateAreas() http.HandlerFunc {
 
 		if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
 			s.respond(w, nil, http.StatusBadRequest)
-			return	
+			return
 		}
 
 		user := r.Context().Value("User").(models.User)
@@ -214,7 +214,7 @@ func (s *Server) handleCreateAreas() http.HandlerFunc {
 
 		if _, err := s.store.Area().Create(&area); err != nil {
 			s.respond(w, nil, http.StatusInternalServerError)
-			return	
+			return
 		}
 
 		s.respond(w, nil, http.StatusCreated)

@@ -14,7 +14,6 @@ type User struct {
 	Password  string
 }
 
-
 func (u *User) Validate() error {
 	return nil
 }

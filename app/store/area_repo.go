@@ -20,4 +20,4 @@ func (r *AreaRepo) FindAreasByUserID(userID uint) (*[]models.Area, error) {
 	r.store.db.Where("user_id = ?", userID).Find(&areas)
 
 	return &areas, nil
-} 
+}

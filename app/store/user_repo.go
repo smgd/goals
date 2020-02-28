@@ -1,9 +1,10 @@
 package store
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"goals/app/models"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -12,7 +13,7 @@ type UserRepo struct {
 	store *Store
 }
 
-func (r *UserRepo) Create(u *models.User) (*models.User, error){
+func (r *UserRepo) Create(u *models.User) (*models.User, error) {
 	if err := r.preCreate(u); err != nil {
 		return u, err
 	}
@@ -22,9 +23,8 @@ func (r *UserRepo) Create(u *models.User) (*models.User, error){
 	return u.Sanitized(), nil
 }
 
-func (r *UserRepo) FindByUsername(username string) (*models.User, error){
+func (r *UserRepo) FindByUsername(username string) (*models.User, error) {
 	var user models.User
-
 
 	r.store.db.First(&user, "username = ?", username)
 
@@ -34,7 +34,6 @@ func (r *UserRepo) FindByUsername(username string) (*models.User, error){
 
 	return &user, nil
 }
-
 
 func (r *UserRepo) preCreate(u *models.User) error {
 	var count int64
