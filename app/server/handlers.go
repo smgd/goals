@@ -8,30 +8,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/copier"
-	"github.com/sirupsen/logrus"
 )
-
-func (s *Server) respond(w http.ResponseWriter, data interface{}, status int) {
-	if data != nil {
-		w.Header().Set("Content-Type", "application/json")
-		payload, _ := json.Marshal(data)
-		_, err := w.Write(payload)
-		if err != nil {
-			logrus.WithFields(logrus.Fields{
-				"package":  "app",
-				"function": "ResponseWriter.Write",
-				"error":    err,
-				"payload":  payload,
-			}).Warning("Internal server error")
-
-			status = http.StatusInternalServerError
-		}
-	}
-
-	if status != 200 {
-		w.WriteHeader(status)
-	}
-}
 
 func (s *Server) createToken(username string) (string, error) {
 	tokenFactory := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
@@ -132,7 +109,7 @@ func (s *Server) handleWhoAmI() http.HandlerFunc {
 		LastName  string `json:"last_name"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		user := r.Context().Value("User").(*models.User)
+		user := s.getRequestUser(r)
 		resp := response{}
 		if err := copier.Copy(&resp, &user); err != nil {
 			s.respond(w, nil, http.StatusInternalServerError)
@@ -166,7 +143,7 @@ func (s *Server) handleGetAreas() http.HandlerFunc {
 		Areas []areasResponse `json:"areas"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		user := r.Context().Value("User").(*models.User)
+		user := s.getRequestUser(r)
 
 		userAreas, err := s.store.Area().FindAreasByUserID(user.ID)
 		if err != nil {
@@ -201,7 +178,7 @@ func (s *Server) handleCreateAreas() http.HandlerFunc {
 			return
 		}
 
-		user := r.Context().Value("User").(*models.User)
+		user := s.getRequestUser(r)
 
 		area := models.Area{
 			Name:        requestData.Name,
