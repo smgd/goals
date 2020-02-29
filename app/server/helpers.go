@@ -33,3 +33,7 @@ func (s *Server) respond(w http.ResponseWriter, data interface{}, status int) {
 func (s *Server) getRequestUser(r *http.Request) *models.User {
 	return r.Context().Value("User").(*models.User)
 }
+
+func (s *Server) decodeBody(r *http.Request, v interface{}) error {
+	return json.NewDecoder(r.Body).Decode(&v)
+}

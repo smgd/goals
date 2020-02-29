@@ -1,10 +1,10 @@
 package server
 
 import (
-	"encoding/json"
-	"github.com/jinzhu/copier"
 	"goals/app/models"
 	"net/http"
+
+	"github.com/jinzhu/copier"
 )
 
 func (s *Server) handleRegister() http.HandlerFunc {
@@ -22,7 +22,7 @@ func (s *Server) handleRegister() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var requestData request
 
-		if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
+		if err := s.decodeBody(r, &requestData); err != nil {
 			s.respond(w, nil, http.StatusBadRequest)
 			return
 		}
@@ -63,7 +63,7 @@ func (s *Server) handleLogin() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var requestData request
 
-		if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
+		if err := s.decodeBody(r, &requestData); err != nil {
 			s.respond(w, nil, http.StatusBadRequest)
 			return
 		}
@@ -159,7 +159,7 @@ func (s *Server) handleCreateAreas() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var requestData request
 
-		if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
+		if err := s.decodeBody(r, &requestData); err != nil {
 			s.respond(w, nil, http.StatusBadRequest)
 			return
 		}
