@@ -47,7 +47,6 @@ func (s *Store) Close() {
 	s.db.Close()
 }
 
-// UserRepo wrapper
 func (s *Store) User() *UserRepo {
 	if s.userRepo != nil {
 		return s.userRepo
