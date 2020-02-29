@@ -1,6 +1,5 @@
 FROM golang:alpine
-RUN apk add --no-cache git
-RUN apk add --no-cache make
+RUN apk add --no-cache git make
 ADD . /go/src/goals
 RUN set -ex && \
   cd /go/src/goals && \
