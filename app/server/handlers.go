@@ -1,8 +1,9 @@
 package server
 
 import (
-	"github.com/smgd/goals/app/models"
 	"net/http"
+
+	"github.com/smgd/goals/app/models"
 
 	"github.com/jinzhu/copier"
 )

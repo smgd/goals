@@ -1,9 +1,10 @@
 package server
 
 import (
-	"github.com/smgd/goals/app/store"
 	"net/http"
 	"os"
+
+	"github.com/smgd/goals/app/store"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"

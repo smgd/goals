@@ -3,6 +3,7 @@ package store
 import (
 	"errors"
 	"fmt"
+
 	"github.com/smgd/goals/app/models"
 
 	"golang.org/x/crypto/bcrypt"
