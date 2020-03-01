@@ -10,4 +10,6 @@ type Goal struct {
 	Description string
 	Area        Area `gorm:"foreignkey:AreaID"`
 	AreaID      uint
+	User        User `gorm:"foreignkey:UserID"`
+	UserID      uint
 }

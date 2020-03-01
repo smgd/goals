@@ -118,12 +118,12 @@ func (s *Server) handlePing() http.HandlerFunc {
 
 func (s *Server) handleGetAreas() http.HandlerFunc {
 	type goalsResponse struct {
-		ID          int    `json:"id"`
+		ID          uint   `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
 	}
 	type areasResponse struct {
-		ID          int             `json:"id"`
+		ID          uint            `json:"id"`
 		Weight      int             `json:"weight"`
 		Name        string          `json:"name"`
 		Description string          `json:"description"`
@@ -201,5 +201,34 @@ func (s *Server) handleCreateAreas() http.HandlerFunc {
 		}
 
 		s.respond(w, nil, http.StatusCreated)
+	}
+}
+
+func (s *Server) handleGetGoals() http.HandlerFunc {
+	type goalsResponse struct {
+		ID          uint   `json:"id"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
+		AreaID      uint   `json:"area_id"`
+	}
+	type response struct {
+		Goals []goalsResponse `json:"goals"`
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := s.getRequestUser(r)
+
+		userGoals, err := s.store.Goal().FindGoalsByUserID(user.ID)
+		if err != nil {
+			s.respond(w, nil, http.StatusBadRequest)
+		}
+
+		resp := response{Goals: []goalsResponse{}}
+
+		if err := copier.Copy(&resp.Goals, &userGoals); err != nil {
+			s.respond(w, nil, http.StatusInternalServerError)
+			return
+		}
+
+		s.respond(w, resp, http.StatusOK)
 	}
 }

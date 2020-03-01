@@ -7,4 +7,5 @@ func (s *Server) configureRouter() {
 	s.addPrivateRoute("whoami", s.handleWhoAmI(), "GET")
 	s.addPrivateRoute("areas", s.handleGetAreas(), "GET")
 	s.addPrivateRoute("areas", s.handleCreateAreas(), "POST")
+	s.addPrivateRoute("goals", s.handleGetGoals(), "GET")
 }
