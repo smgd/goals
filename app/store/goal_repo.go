@@ -14,7 +14,7 @@ func (r *GoalRepo) Create(a *models.Goal) (*models.Goal, error) {
 	return a, nil
 }
 
-func (r *GoalRepo) FindGoalsByAreaID(areaID uint) (*[]models.Goal, error) {
+func (r *GoalRepo) FindGoalsByAreaID(areaID int) (*[]models.Goal, error) {
 	var goals []models.Goal
 
 	r.store.db.Where("area_id = ?", areaID).Find(&goals)

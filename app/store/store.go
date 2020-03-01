@@ -13,6 +13,8 @@ type Store struct {
 	db       *gorm.DB
 	userRepo *UserRepo
 	areaRepo *AreaRepo
+	goalRepo *GoalRepo
+	taskRepo *TaskRepo
 }
 
 // Store constructor
@@ -69,4 +71,28 @@ func (s *Store) Area() *AreaRepo {
 	}
 
 	return s.areaRepo
+}
+
+func (s *Store) Goal() *GoalRepo {
+	if s.goalRepo != nil {
+		return s.goalRepo
+	}
+
+	s.goalRepo = &GoalRepo{
+		store: s,
+	}
+
+	return s.goalRepo
+}
+
+func (s *Store) Task() *TaskRepo {
+	if s.taskRepo != nil {
+		return s.taskRepo
+	}
+
+	s.taskRepo = &TaskRepo{
+		store: s,
+	}
+
+	return s.taskRepo
 }

@@ -117,13 +117,19 @@ func (s *Server) handlePing() http.HandlerFunc {
 }
 
 func (s *Server) handleGetAreas() http.HandlerFunc {
-	type areasResponse struct {
-		Id          int    `json:"id"`
-		Weight      int    `json:"weight"`
+	type goalsResponse struct {
+		ID          int    `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
-		Icon        string `json:"icon"`
-		IsFavourite bool   `json:"is_favourite"`
+	}
+	type areasResponse struct {
+		ID          int             `json:"id"`
+		Weight      int             `json:"weight"`
+		Name        string          `json:"name"`
+		Description string          `json:"description"`
+		Icon        string          `json:"icon"`
+		IsFavourite bool            `json:"is_favourite"`
+		Goals       []goalsResponse `json:"goals"`
 	}
 	type response struct {
 		Areas []areasResponse `json:"areas"`
@@ -141,6 +147,20 @@ func (s *Server) handleGetAreas() http.HandlerFunc {
 		if err := copier.Copy(&resp.Areas, &userAreas); err != nil {
 			s.respond(w, nil, http.StatusInternalServerError)
 			return
+		}
+
+		for i, area := range resp.Areas {
+			resp.Areas[i].Goals = []goalsResponse{}
+
+			goals, err := s.store.Goal().FindGoalsByAreaID(area.ID)
+			if err != nil {
+				s.respond(w, nil, http.StatusBadRequest)
+			}
+
+			if err := copier.Copy(&resp.Areas[i].Goals, &goals); err != nil {
+				s.respond(w, nil, http.StatusInternalServerError)
+				return
+			}
 		}
 
 		s.respond(w, resp, http.StatusOK)
