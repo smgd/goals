@@ -1,7 +1,7 @@
 package store
 
 import (
-	"goals/app/models"
+	"github.com/smgd/goals/app/models"
 )
 
 type AreaRepo struct {

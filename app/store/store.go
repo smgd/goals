@@ -1,7 +1,7 @@
 package store
 
 import (
-	"goals/app/models"
+	"github.com/smgd/goals/app/models"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"

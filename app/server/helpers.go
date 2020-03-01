@@ -3,7 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"goals/app/models"
+	"github.com/smgd/goals/app/models"
 	"net/http"
 
 	"github.com/sirupsen/logrus"

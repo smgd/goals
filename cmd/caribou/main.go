@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"goals/app/server"
+	"github.com/smgd/goals/app/server"
 
 	"github.com/BurntSushi/toml"
 )

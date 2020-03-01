@@ -1,7 +1,7 @@
 package server
 
 import (
-	"goals/app/store"
+	"github.com/smgd/goals/app/store"
 )
 
 // Server's config
